@@ -2,7 +2,6 @@
 
 ## Pokedex Offline
 
-**Entrega:** al inicio de la Clase 6
 **Tiempo estimado:** 2 a 3 horas, repartidas en varios dias (no lo hagas de una sentada)
 **Dificultad:** alta a proposito. Vas a tener que buscar cosas que NO vimos en clase.
 

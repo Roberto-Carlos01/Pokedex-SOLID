@@ -1,0 +1,14 @@
+[
+  {
+    "id": 25,
+    "name": "pikachu",
+    "height": 4,
+    "weight": 60,
+    "types": [
+      "electric"
+    ],
+    "firstMove": "mega-punch",
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+    "savedAt": "Sat Oct 03 2026 14:16:16 GMT-0400 (hora de Bolivia)"
+  }
+]
