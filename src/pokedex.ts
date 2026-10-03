@@ -1,75 +1,98 @@
-import type { PokemonRecord, PokemonResponse, TypeElement } from "./interfaces.js";
+import type { PokemonRecord, PokemonResponse, pokemonStorage, TypeElement } from "./interfaces.js";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 
 export class Pokedex {
+
   // metodo que atrapa un pokemon de la API y lo guarda en disco (JSON)
+  // Ahora primero buscaremos el pokemon en el JSON y luego en la API , aplicando DIP: Dependency Inversion Principle
+  private storage: pokemonStorage;  
+  constructor(storage: pokemonStorage){
+    this.storage = storage;
+  }
   async catchPokemon(nameOrId: string): Promise<PokemonRecord | undefined> {
-    let pokemon: PokemonRecord | undefined = await catchPokemonAPI(nameOrId);
+    const pokemones: PokemonRecord[] = await this.storage.read();
     //validamos el directorio
-    await mkdir('src/data', { recursive: true });
-    let pokemons: PokemonRecord[];
-    try {
-      let texto: string = await readFile("src/data/pokedex.json", 'utf-8');
-      pokemons = texto.trim() === "" ? [] : JSON.parse(texto);
-    } catch (error) {
-      pokemons = [];
-      //creamos el archivo
-      await writeFile("src/data/pokedex.json", "[]", "utf-8");
+    let pokemon : PokemonRecord | undefined = pokemones.find((p)=> {
+      return (p.id === parseInt(nameOrId) || p.name.toLocaleLowerCase() === nameOrId.toLocaleLowerCase());
+    })
+    if (!pokemon) {
+      pokemon = await this.catchPokemonAPI(nameOrId);
     }
-    // validamos que el pokemo que queremos ingresar no exista aun en el pokedex.json
-    const pokemonRepeat: PokemonRecord | undefined = pokemons.find((p) => p.id === pokemon?.id)
-    if (!pokemonRepeat && pokemon) {
-      pokemons.push(pokemon);
-      save(pokemons);
+    if (!pokemon) {
+      console.log(`El Pokemon : ${nameOrId} No existe`);
     }
     return pokemon;
   }
-}
 
+      async catchPokemonAPI(nameOrId: string): Promise<PokemonRecord | undefined> {
+      const pokemon = await this.getJson<PokemonResponse>(
+        `https://pokeapi.co/api/v2/pokemon/${nameOrId.toLowerCase()}`,
+      );
+      if (!pokemon) {
+        return undefined;
+      }
+      const pokemonR: PokemonRecord = this.toRecord(pokemon);
 
-export async function save(records: PokemonRecord[]): Promise<void> {
-  await writeFile(
-    "src/data/pokedex.json",
-    JSON.stringify(records, null, 2),
-    "utf-8",
-  );
-}
+      const pokemones = await this.storage.read();
 
-export async function catchPokemonAPI(nameOrId: string): Promise<PokemonRecord | undefined> {
-  try {
-    const pokemonRes: PokemonResponse = await getJson<PokemonResponse>(
-      `https://pokeapi.co/api/v2/pokemon/${nameOrId}`,
+      const pokemonRepetido = pokemones.find(
+        (p) => p.id === pokemonR.id,
+      );
+      if (pokemonRepetido) {
+        console.log(`El pokemon : ${pokemonRepetido.name} existe en la data`);
+        return pokemonR;
+      }
+      pokemones.push(pokemonR);
+
+      await this.save(pokemones);
+      return pokemonR;
+    }
+    async readAll(): Promise<PokemonRecord[]> {
+    console.log("================== FILE POKEDEX.JSON =====================");
+    return this.storage.read();
+  }
+
+  async findByName(name: string): Promise<PokemonRecord | undefined> {
+    const pokemones = await this.storage.read();
+    const pokemon = pokemones.find((pok) => {
+      return pok.name.toLowerCase() === name.toLowerCase();
+    });
+    return pokemon;
+  }
+    async getJson<T>(url: string): Promise<T> {
+    const res = await fetch(url);
+    return res.json() as Promise<T>;
+  }
+  toRecord(
+    pokemonResponse: PokemonResponse,
+  ): PokemonRecord {
+    const pokemon: PokemonRecord = {
+      id: pokemonResponse.id,
+      name: pokemonResponse.name,
+      height: pokemonResponse.height,
+      weight: pokemonResponse.weight,
+      types: this.arrayTypesString(pokemonResponse.types),
+      firstMove:
+        pokemonResponse.moves[0]?.move.name || "No tiene movimientos registrados",
+      sprite: pokemonResponse.sprites.front_default,
+      savedAt: String(new Date()),
+    };
+    return pokemon;
+  }
+  async save(records: PokemonRecord[]): Promise<void> {
+    await writeFile(
+      "src/data/pokedex.json",
+      JSON.stringify(records, null, 2),
+      "utf-8",
     );
-    const pokemonRecord: PokemonRecord = await toRecord(pokemonRes);
-    return pokemonRecord;
-  } catch (error) {
-    console.error("Error de red o servidor inaccesible:", error);
+  }
+  arrayTypesString(types: TypeElement[]): string[] {
+    return types.map((element) => element.type.name);
   }
 }
 
-export async function getJson<T>(url: string): Promise<T> {
-  const res = await fetch(url);
-  return res.json() as Promise<T>;
-}
 
-export async function toRecord(
-  pokemonResponse: PokemonResponse,
-): Promise<PokemonRecord> {
-  const pokemon: PokemonRecord = {
-    id: pokemonResponse.id,
-    name: pokemonResponse.name,
-    height: pokemonResponse.height,
-    weight: pokemonResponse.weight,
-    types: arrayTypesString(pokemonResponse.types),
-    firstMove:
-      pokemonResponse.moves[0]?.move.name || "No tiene movimientos registrados",
-    sprite: pokemonResponse.sprites.front_default,
-    savedAt: String(new Date()),
-  };
-  return pokemon;
-}
 
-export function arrayTypesString(types: TypeElement[]): string[] {
-  return types.map((element) => element.type.name);
-}
+
+
 

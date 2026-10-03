@@ -1,3 +1,7 @@
+export interface pokemonStorage{
+  read() : Promise<PokemonRecord[]>;
+  save(records: PokemonRecord[]): Promise<void>;
+}
 export interface PokemonResponse {
   id: number;
   name: string;
