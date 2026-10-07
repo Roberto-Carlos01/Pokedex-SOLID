@@ -16,7 +16,11 @@ export class Pokedex {
     let pokemon: PokemonRecord | undefined = pokemons.find((p)=>{
       return (p.id === parseInt(nameOrId) || p.name.toLowerCase() === nameOrId.toLowerCase())
     })
+    if(pokemon){
+      console.log(" +++++ desde cache +++++")
+    }
     if (!pokemon){
+      console.log(" +++++ desde API +++++")
       pokemon = await this.catchPokemonAPI(nameOrId);
     }
     if(!pokemon){
