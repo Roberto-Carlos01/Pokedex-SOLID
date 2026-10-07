@@ -7,7 +7,7 @@ async function main(): Promise<void> {
   const pokedex = new Pokedex(storage);
 
   const comando: string = process.argv[2] || "";
-  const argumento: string = process.argv[3] || "";
+  let argumento: string = process.argv[3] || "";
 
   if (!comando) {
     console.log("No ingresaste ningún comando.");
@@ -23,20 +23,27 @@ async function main(): Promise<void> {
         console.log("npx tsx src/main.ts catch pikachu");
         break;
       }
-
-      const pokemon: PokemonRecord | undefined =
-        await pokedex.catchPokemon(argumento);
-
-      if (!pokemon) {
-        console.log(`No fue posible capturar al pokemon "${argumento}".`);
-        console.log(
-          "Verifica que el nombre esté bien escrito o que el Pokémon exista.",
-        );
-        break;
+      let pokemon: PokemonRecord | undefined;
+      console.time("Tiempo de respuesta del for");
+      for (let i=3 ; i<10 ; i++){
+        argumento = process.argv[i] || "";
+        if (!argumento)
+          break;
+        pokemon = await pokedex.catchPokemon(argumento);
+  
+        if (!pokemon) {
+          console.log(`No fue posible capturar al pokemon "${argumento}".`);
+          console.log(
+            "Verifica que el nombre esté bien escrito o que el Pokémon exista.",
+          );
+          continue;
+        }
+        if (pokemon) {
+          console.log("\nPokemon capturado correctamente.\n");
+          pokedex.show(pokemon);
+        }
       }
-
-      console.log("\nPokemon capturado correctamente.\n");
-      pokedex.show(pokemon);
+      console.timeEnd("Tiempo de respuesta del for");
       break;
     }
 
@@ -93,8 +100,8 @@ async function main(): Promise<void> {
         `Se encontraron ${pokemones.length} pokemon(s) del tipo "${argumento}".\n`,
       );
 
-      pokemones.forEach((pokemon) => {
-        pokedex.show(pokemon);
+      pokemones.forEach((pok) => {
+        pokedex.show(pok);
       });
 
       break;

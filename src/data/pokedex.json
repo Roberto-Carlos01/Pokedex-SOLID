@@ -49,5 +49,17 @@
     "firstMove": "mega-punch",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
     "savedAt": "Wed Oct 07 2026 10:30:58 GMT-0400 (hora de Bolivia)"
+  },
+  {
+    "id": 4,
+    "name": "charmander",
+    "height": 6,
+    "weight": 85,
+    "types": [
+      "fire"
+    ],
+    "firstMove": "mega-punch",
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
+    "savedAt": "Wed Oct 07 2026 12:46:23 GMT-0400 (hora de Bolivia)"
   }
 ]

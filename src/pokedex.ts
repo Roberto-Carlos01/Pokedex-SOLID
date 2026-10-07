@@ -62,9 +62,16 @@ export class Pokedex {
     });
     return pokemon;
   }
-  async getJson<T>(url: string): Promise<T> {
-    const res = await fetch(url);
-    return res.json() as Promise<T>;
+  async getJson<T>(url: string): Promise<T | undefined> {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        return undefined;
+      }
+      return await res.json() as T;
+    } catch (error) {
+      return undefined;
+    }
   }
   toRecord(pokemonResponse: PokemonResponse): PokemonRecord {
     const pokemon: PokemonRecord = {
