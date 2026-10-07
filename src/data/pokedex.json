@@ -1,5 +1,44 @@
 [
   {
+    "id": 3,
+    "name": "venusaur",
+    "height": 20,
+    "weight": 1000,
+    "types": [
+      "grass",
+      "poison"
+    ],
+    "firstMove": "swords-dance",
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png",
+    "savedAt": "Wed Oct 07 2026 10:21:34 GMT-0400 (hora de Bolivia)"
+  },
+  {
+    "id": 1,
+    "name": "bulbasaur",
+    "height": 7,
+    "weight": 69,
+    "types": [
+      "grass",
+      "poison"
+    ],
+    "firstMove": "razor-wind",
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+    "savedAt": "Wed Oct 07 2026 10:30:35 GMT-0400 (hora de Bolivia)"
+  },
+  {
+    "id": 2,
+    "name": "ivysaur",
+    "height": 10,
+    "weight": 130,
+    "types": [
+      "grass",
+      "poison"
+    ],
+    "firstMove": "swords-dance",
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png",
+    "savedAt": "Wed Oct 07 2026 10:30:46 GMT-0400 (hora de Bolivia)"
+  },
+  {
     "id": 25,
     "name": "pikachu",
     "height": 4,
@@ -9,6 +48,6 @@
     ],
     "firstMove": "mega-punch",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-    "savedAt": "Sat Oct 03 2026 14:16:16 GMT-0400 (hora de Bolivia)"
+    "savedAt": "Wed Oct 07 2026 10:30:58 GMT-0400 (hora de Bolivia)"
   }
 ]

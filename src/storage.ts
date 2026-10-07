@@ -8,15 +8,12 @@ export class JsonPokemonStorage implements pokemonStorage{
     }
     
     async read(): Promise<PokemonRecord[]>{
-        let pokemons: PokemonRecord[] ;
         try {
-            //verificamos el directorio
-            await mkdir(this.filePath , { recursive: true});
             let texto : string = await readFile(this.filePath, 'utf-8');
             return texto.trim() === '' ? [] : JSON.parse(texto);
         } catch (error) {
+            console.log("El archivo no existe aún, se retornará un arreglo vacío.");
             return [];
-            throw error;
         }
     }
     async save(records : PokemonRecord[]): Promise<void>{
@@ -27,7 +24,6 @@ export class JsonPokemonStorage implements pokemonStorage{
                 await mkdir(dir, { recursive: true });
             }
             await writeFile(this.filePath, JSON.stringify(records, null, 2), 'utf-8');
-            
         } catch (error) {
             throw error;
         }
